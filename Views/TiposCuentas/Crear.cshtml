@@ -1,4 +1,4 @@
-﻿@Model TipoCuenta
+﻿@model TipoCuenta
 
 @{
     ViewData["Title"] = "Crear Tipo Cuenta";
@@ -9,10 +9,17 @@
     Ejemplos: Préstamos, tarjetas de crédito, etc.
 </h5>
 
-<form asp-controller="TiposCuentas" asp-action="Crear">
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Crear">
     <div class="mb-3">
-        <label for="Nombre" class="form-label">Nombre</label>
-        <input type="text" id="Nombre" name="Nombre" class="form-control" />
+        <label asp-for="Nombre" class="form-label">Nombre</label>
+        <input type="text" asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
     </div> 
     <button type="submit" class="btn btn-primary">Enviar</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
