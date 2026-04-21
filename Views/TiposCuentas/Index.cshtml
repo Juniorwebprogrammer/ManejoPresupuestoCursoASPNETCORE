@@ -1,0 +1,68 @@
+﻿@model IEnumerable<TipoCuenta>
+
+@{
+    ViewData["Title"] = "Tipos de Cuentas";
+}
+
+<h1>Tipos de Cuentas</h1>
+<h5>El tipo de cuenta se refiere a cómo podemos agregar cuentas. Ejemplos: Préstamos, tarjeta de crédito, etc.</h5>
+<a asp-action="Crear" class="btn btn-primary mb-3">Crear nuevo</a>
+
+<table class="table">
+     <thead>
+        <tr>
+            <th>Acciones</th>
+            <th>Nombres</th>
+        </tr>
+    </thead>
+    <tbody id="reordenable">
+        @foreach (var tipoCuenta in Model)
+        {
+            <tr data-id="@tipoCuenta.Id">
+                <td>
+                    <input type="hidden" value="@tipoCuenta.Id" class="Ids" />
+                    <a asp-action="Editar" asp-route-id="@tipoCuenta.Id" class="btn btn-primary">Editar</a>
+                    <a asp-action="Borrar" asp-route-id="@tipoCuenta.Id" class="btn btn-danger">Eliminar</a>
+                </td>
+                <td>@tipoCuenta.Nombre</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const urlOrdenar = '@Url.Action("Ordenar", "TiposCuentas")';
+
+        $(function() {
+            $("#reordenable").sortable({
+                stop: async function(event, ui) {
+                    await actualizarOrdenes();
+                }
+            });
+        });
+
+        async function actualizarOrdenes() {
+            const ids = obtenerIdsElementos();
+            await enviarIdsAlBackend(ids);
+        };
+
+        function obtenerIdsElementos() {
+            const ids = $(".Ids").map(function() {
+                return parseInt($(this).val(), 10);
+            }).get();
+            return ids;
+        };
+
+        async function enviarIdsAlBackend(ids) {
+            var data = JSON.stringify(ids);
+            await fetch(urlOrdenar, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            });
+        };
+    </script>
+}
